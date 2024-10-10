@@ -1,85 +1,77 @@
-#include<iostream>
-#include<sstream>
+#include <iostream>
+#include <sstream>
+
 using namespace std;
 
 template<class Type>
-class Queue {
-private:
-	int maxSize;
-	int front;
-	int rear;
-	Type* queue;
+class Queue{
+    
+    private:
+    int front;
+    int rear;
+    int maxSize;
+    Type *queue;
+    
+    public:
 
-public:
+    Queue(int maxSize){
+        front = -1;
+        rear = -1;
+        this->maxSize = maxSize;
+        queue = new Type[maxSize];
+    }
 
-	Queue(int maxSize) {
-		front = -1;
-		rear = -1;
-		this->maxSize = maxSize;
-		queue = new Type[maxSize];
-	}
+    ~Queue(){
+        delete [] queue;
+    }
 
-	~Queue() {
-		delete[] queue;
-	}
+    bool isEmpty(){
+        return (front == -1 && rear == -1);
+    }
 
-	bool isFull() {
-		return (rear == maxSize - 1);
-	}
+    bool isFull(){
+        return (front == (rear + 1) % maxSize);
+    }
 
-	bool isEmpty() {
-		return (front == -1 && rear == -1);
-	}
+    void Insert(Type item){
+        if(isFull()){
+            cout << "\nQueue Overflow!\n";
+            return;
+        }else{
+            if(front == -1 && rear == -1){
+                front++;
+                rear++;
+                queue[rear] = item;
+            }else{
+                rear = (rear + 1) % maxSize;
+                queue[rear] = item;
+            }
+        }
+    }
 
-	void insert(Type item) {
-		if (isFull()) {
-			cout << "\nQueue Overflow!\n";
-			return;
-		}
-		else {
-			if (front == -1 && rear == -1) {
-				front++;
-				rear++;
-				queue[rear] = item;
-				cout << "\n" << item << " inserted Successfully\n";
-			}
-			else {
-				rear++;
-				queue[rear] = item;
-				cout << "\n" << item << " inserted Successfully\n";
-			}
-		}
-	}
+    void Remove(Type &item){
+        if(isEmpty()){
+            cout << "\nQueue Underflow!\n";
+            return;
+        }else{
+            if(front == rear){
+                item = queue[front];
+                front = -1;
+                rear = -1;
+            }else{
+                item = queue[front];
+                front = (front + 1) % maxSize;
+            }
+        }
+    }
 
-	void remove(Type& item) {
-		if (isEmpty()) {
-			cout << "\nQueue Underflow!\n";
-			return;
-		}
-		else {
-			if (front == 0 && rear == 0) {
-				item = queue[front];
-				front--;
-				rear--;
-				cout << "\n" << item << " removed Successfully\n";
-			}
-			else {
-				item = queue[front];
-				for (int i = 0; i < rear; i++) {
-					queue[i] = queue[i + 1];
-				}
-				rear--;
-				cout << "\n" << item << " removed Successfully\n";
-			}
-		}
-	}
 };
 
 void Menu() {
 	cout << "\n------------- Main Menu ------------\n";
 	cout << "\n1.Insert";
 	cout << "\n2.Remove";
-	cout << "\n3.Get All Elements using FIFO";
+	cout << "\n3.Remove All Elements using FIFO";
 	cout << "\n4.Exit";
 	cout << "\n\nEnter your Choice: ";
 }
@@ -98,6 +90,8 @@ int main() {
 			isValidSize = true;
 		}
 		else {
+			cout << "\nInvalid Size";
+			cout << "\nTry Again\n";
 			isValidSize = false;
 		}
 
@@ -122,16 +116,18 @@ int main() {
 			cout << "\nEnter a Number: ";
 			getline(cin, ITEM);
 			stringstream(ITEM) >> item;
-			queue->insert(item);
+			queue->Insert(item);
 		}
 		else if (choice == 2) {
 			int item;
-			queue->remove(item);
+			queue->Remove(item);
 		}
 		else if (choice == 3) {
+			cout << "\nOutput: " << endl;
 			while (!queue->isEmpty()) {
 				int item;
-				queue->remove(item);
+				queue->Remove(item);
+				cout << item << " ";
 			}
 		}
 		else {
@@ -142,6 +138,5 @@ int main() {
 
 
 	cout << endl;
-	system("Pause");
 	return 0;
 }
