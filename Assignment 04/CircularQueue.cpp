@@ -54,6 +54,8 @@ int main() {
 		else if (choice == 2) {
 			int item;
 			queue->Remove(item);
+			cout << "\nRemoved item: " << item << endl;
+
 		}
 		else if (choice == 3) {
 			cout << "\nOutput: " << endl;
